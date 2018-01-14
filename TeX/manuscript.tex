@@ -44,12 +44,16 @@
 \begin{document}
 
 \maketitle
+
 \newpage
 \tableofcontents
 \newpage
 
 \begin{abstract}
-    General artificial intelligence refers to machine intelligence than performs a task as successfully as a human does. 
+<<<<<<< HEAD
+=======
+
+\textcolor{red}{Rewritten abstract:}
     
     \mycomment{The previous sentence does not make sense. How is \emph{general} AI defined in terms of the performance of \emph{one} task? }
     
@@ -66,7 +70,17 @@
         \item What do you mean by \emph{meaningful} in meaningful information?
     \end{enumerate}
      Writing \emph{must} signifies that without the ability to represent symbols computers will not be able to solve more complex problems. I think that overstates the case.}\\
+
+    While current networks have been largely successful in \sout{a variety of tasks from} image classification \sout{to}{\color{red}and} sentiment analysis, the internal computations of the networks have only consisted of many basic arithmetic operations. 
     
+    \mycomment{\begin{enumerate}
+        \item[] Why do you need the modifier \emph{current}?
+        \item[] Be careful of the phrase from X to Y. It implies that X and Y are in the same metric space. Consider, for example, from NYC to Boston.
+        \item[] I would not call a sigmoidal activation function a basic arithmetic operation. 
+         \end{enumerate}
+         }
+
+   
     While current networks have been largely successful in \sout{a variety of tasks from} image classification \sout{to}{\color{red}and} sentiment analysis, the internal computations of the networks have only consisted of many basic arithmetic operations. 
     
     \mycomment{\begin{enumerate}
@@ -487,7 +501,7 @@ An error would be the result if the two expressions were to be evaluated since $
 \newpage	
 	
 \begin{figure}
-
+\centering
 \begin{tikzpicture}
 
 	\tikzstyle{operation} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = blue!32]
@@ -530,7 +544,153 @@ An error would be the result if the two expressions were to be evaluated since $
 
 \end{figure}
 
-	In the above example, a $while$ conditional statement repeatedly executes it's body as long as $CurrentValue <= MaxValue$ evaluates to $True$ (meaning that CurrentValue is either less than or equal to the MaxValue). In $while$'s body, the $CurrentValue$ is incremented by one then $NumPrimes$ is incremented if the $CurrentValue$ is a prime number.
+	In the above example, a $while$ conditional statement repeatedly executes it's body as long as $CurrentValue <= MaxValue$ evaluates to $True$ (meaning that CurrentValue is either less than or equal to the MaxValue). In $while$'s body, the $CurrentValue$ is incremented by one then $NumPrimes$ is incremented if the $CurrentValue$ is a prime number. 
+
+
+
+\subsection{The relationship between numerical and categorical information}
+
+	Numerical information consists of numerical values, such that there exists infinitely many numerical values between two numbers. This property makes numerical information continuous. In contrast, categorical information involves individual values out of a set of either finite or infinite possible values. Categorical information are discrete, however, so there exists a finite number of categories between any two categories.
+	
+
+\subsection{Routing categorical information through a neural network}
+	
+	Information is represented in one of two ways, numerical or categorical. Numerical values give us the ability to identify the distance between two values, and to have an infinite number of possible values to work with. Categorical values allow us to express information where a specific value to represent the distance between two categories isn't appropriate. We can also express more vague values using categories, without the need for specific numerical values.
+	We can express the speed that an object is moving using either numerical or categorical values. For instance, we may say that an object is moving at exactly 50 miles per hour, or we can simply say that the object is moving 'fast'. In the following figures, we will examine how to convert between the two types.
+
+\begin{figure}[!htb]
+
+\centering
+\begin{tikzpicture}
+
+	\tikzstyle{operation} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = blue!32]
+	\tikzstyle{value} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = green!40]
+ 	\tikzstyle{function} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = red!40]
+	\tikzstyle{con} = [thick,->]
+
+	\node[value] (ObjectSpeed) at (0,-2) {Object's speed};
+	\node[value] (Speed) at (0,0) {20 mph};
+
+	\node[operation] (greaterThan) at (2,2.5) {compare op: $>=$};
+
+	\node[value] (SpeedComp) at (4,0) {10 mph};
+
+	\node[function] (If) at (5,5) {If};
+
+	\node[function] (Return1) at (6.5,2.5) {return};
+	\node[value] (Fast) at (6.5,0) {'Fast'};
+
+	\node[function] (Return2) at (8.5,2.5) {return};
+	\node[value] (Slow) at (8.5,0) {'Slow'};
+
+	\draw[->](ObjectSpeed) -> (Speed)  node[midway,sloped,above] {};
+
+	\draw[->](Speed) -> (greaterThan)  node[midway,sloped,above] {};
+	\draw[->](SpeedComp) -> (greaterThan)  node[midway,sloped,above] {};	
+
+	\draw[->](greaterThan) -> (If)  node[midway,sloped,above] {condition};	
+
+	\draw[->](If) -> (Return1)  node[midway,sloped,above] {if true};	
+	\draw[->](If) -> (Return2)  node[midway,sloped,above] {if false};	
+
+	\draw[->](Return1) -> (Fast)  node[midway,sloped,above] {};	
+	\draw[->](Return2) -> (Slow)  node[midway,sloped,above] {};	
+
+\end{tikzpicture}
+
+\caption{A syntax tree that defines a procedure for converting categorical representations to numerical ones. In this case, a threshold of 10mph is defined to detirmine whether a numerical definition of the speed of an object is 'Fast' or 'Slow' depending on whether or not the object's speed is above or below the threshold.} 
+
+\end{figure}
+
+The threshold used in the above procedure is arbitrary, and can be defined differently in different networks. \textcolor{red} {This idea can be used to create a network where this threshold is optimized through gradient descent (similarly to the ReLu activation function with a variable bias)}
+
+\subsection{Using conditional expressions to vary computations of neurons}
+
+Consider a simple network with two input neurons, two corresponding weights, and a single output neuron.
+
+\begin{figure}[!htb]
+
+\centering
+\begin{tikzpicture}
+
+	\tikzstyle{input} = [shape=circle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = green!32]
+	\tikzstyle{output} = [shape=circle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = blue!32]
+	\tikzstyle{weight} = [thick,midway,sloped,above,->]
+
+	\node[input] (i1) at (0,0) {8};
+	\node[input] (i2) at (4,0) {5};
+
+	\node[output] (o1) at (2,2) {14};
+
+	\draw[->](i1) -> (o1) node[weight] {0.5};
+	\draw[->](i2) -> (o1) node[weight] {2};
+
+\end{tikzpicture}
+
+\caption{A simple feed-forward neural network with two inputs and one output.}
+
+\end{figure}
+
+\newpage
+
+In the above network, the output neuron's value is calculated as a weighted sum of the inputs. While this algorithm is widely used in feed-forward neural networks, it assumes that the desired output value's relationship to it's inputs can be modelled by a weighted sum of the inputs.  \\
+
+Suppose we wanted to construct a network that returns the number of times older one person is than another. Given the inputs of 24 and 8, the output would be 3 since a 24-year-old is 3 times older than an 8-year-old. However, this relationship cannot be expressed through a weighted sum, since no weighted sum of two variables will always equal the quotient of the two variables. To deal with this problem, we will introduce a 'router' that will allow for more than just a weighted sum to define the output.
+
+\begin{figure}[!htb]
+
+\centering
+\begin{tikzpicture}
+
+	\tikzstyle{input} = [shape=circle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = green!32]
+	\tikzstyle{output} = [shape=circle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = blue!32]
+	\tikzstyle{router} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = red!32]
+	\tikzstyle{op} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=18]
+	\tikzstyle{weight} = [thick,midway,sloped,above,->]
+
+	\node[input] (i1) at (0,0) {24 Years};
+	\node[input] (i2) at (4,0) {8 Years};
+
+	\node[font=\bf] (dum) at (6,2) {USE DIVISION};
+	\node[router] (r) at (2,2) {Router};
+
+	\node[op] (op1) at (0,4) {$\div$};
+	\node[op] (op2) at (4,4) {$+$};
+
+	\node[output] (o1) at (2,6) {3 Times as old};
+
+	\draw[->](i1) -> (r) node[weight] {};
+	\draw[->](i2) -> (r) node[weight] {};
+
+	\draw[->,line width=0.5mm](dum) -> (r) {};
+
+	\draw[->](r) -> (op1) node[weight] {};
+	\draw[->](r) -> (op2) node[weight] {};
+
+	\draw[->](op1) -> (o1) node[weight] {};
+	\draw[->](op2) -> (o1) node[weight] {};
+
+
+\end{tikzpicture}
+
+\caption{A network which yields the number of times a person is older than another.}
+
+\end{figure}
+
+The 'Router' represents some function which decides which computational class should be used to compute the output. In the above network, we instructed the router to operate on input values using division, since that was how we detirmined that the task could be solved. \\
+
+Of course, instructing the router as to which computation it should use in each input case defeats it's purpose. Instead, we may use conditional statements to determine which computation will be used. This allows us to construct networks which perform different classes of computation depending on the situation. One such network is shown below.
+
+\begin{figure}
+
+\begin{tikzpicture}
+
+\end{tikzpicture}
+
+\caption{}
+
+\end{figure}
+
 
 \section{Results}
 
