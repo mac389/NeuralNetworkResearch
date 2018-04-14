@@ -54,10 +54,15 @@
 		
 		\textcolor{red}{Rewritten abstract:}
 		In theory, a neural network of sufficient size, where each neuron feeds the weighted sum of it's inputs through a sigmoid activation function, can approximate any function. In practice, these networks will become unnecesarily large to approximate many elementary functions, such as square root, absolute value, and logarithm functions. We propose a technique for introducing a wider range of functional classes in neural networks. \\
+
+		\mycomment{Its is different from it's.}
+
+		\mycomment{The fundamental statement is: \emph{Neural networks can approximate any function.}. The activation function does not have to be sigmoidal. If a group of units uses sinusoids as their activation function, then the number of units needed to approximate the function to some precision will be the minimum possible.}
+
 		
 		General artificial intelligence refers to machine intelligence that performs a task as successfully as a human does. 
 		
-		\mycomment{The previous sentence does not make sense. How is \emph{general} AI defined in terms of the performance of \emph{one} task? }
+		\mycomment{$\Rightarrow$ The previous sentence does not make sense. How is \emph{general} AI defined in terms of the performance of \emph{one} task? }
 		
 		A fundamental difference between human neural network and current machine neural networks is that only human networks combine symbolic reasoning with computation. 
 		
@@ -761,9 +766,72 @@
 	
 	\subsection{Networks that are aware of the functions they compute}
 	
-		Neural Networks are typically tasked with modeling some relationship between input values and output values. For instance, a Network may be trained to return an output which classifies an input image. However, the extent to which Neural Networks can manipulate their own internal state has not been considered. In this subsection we will attempt to construct a network which can activate some identifiable signal depending on whether or not a function was applied to an input signal or not. 
+		Neural Networks are typically tasked with modeling some relationship between input values and output values. 
+
+		\mycomment{What does the word \emph{typical} mean? An opening statement may be vague. It is not clear to me how restating that neural networks approximate functions relates to the theme of this topic. }
+
+		\mycomment{Realize that \emph{modeling some relationathip between input values and output values} is the same as \emph{approximating a function}.}
+
+		\mycomment{A better way to begin is to say: One approach to giving to a neural network that approximates functions the ability to manipulate symbols is to introduce units and a pattern of connections that report which functions the network is currently approximating.}
+
+For instance, a Network may be trained to return an output which classifies an input image. 
+
+	\mycomment{The devil is in the details. What do you mean by \emph{internal state}?}
+
+	\mycomment{Why did you capitalize \emph{Network} and \emph{Neural Netowrks}?}
+
+However, the extent to which Neural Networks can manipulate their own internal state has not been considered. 
+
+	\mycomment{Is this true? I don't find any articles via gScholar to contradict your statment. It is my temperment, nevertheless, to avoid grandoise statements. State the work. Let others do perform interpretive dance.}
+
+In this subsection we \sout{will attempt to} construct a network \sout{which can}that activate\emph{s} \sout{some identifiable}a signal depending on whether or not a function was applied to an input signal or not. 
 		
 		In subsection 2.7, a 'router' was used to decide which function should be used to combine two input values. We will construct a network which imitates the role of the router, using a standard combination of weights and activation functions. To do this, we will need to incorporate the ReLu activation funciton (which sets a value to zero if it's less than or equal to zero and leaves the value unchanged otherwise) and a bias unit (which adds a constant value to a neuron). 
+
+\mycomment{I do not understand the words you wrote.}
+
+\mycomment{Consider replacing what you wrote with the following: Here we construct a network that reports whether the network is adding or substracting two numbers (Figure \ref{fig:self-aware})}. 
+
+\begin{figure}[b]
+	\centering
+	\begin{tikzpicture}			
+	\tikzstyle{input} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = green!32]
+	\tikzstyle{hidden} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = red!32]
+	\tikzstyle{bias} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = purple!32]
+	\tikzstyle{output} = [shape=rectangle, draw, outer sep=0,inner  sep=6,minimum size=15, fill = blue!32]
+	\tikzstyle{weight} = [thick,midway,sloped,above,->]	
+
+
+	\node[bias] (operator-1) {$\oplus$};
+	\node[input, below left = of operator-1] (operand-1) {$x_1$};
+	\node[input, below right= of operator-1] (operand-2) {$x_2$};	
+	
+	\node[bias, below left= of operand-2] (operator-2) {$\ominus$};
+
+	\node[input, above = of operator-1] (output-operator-1) {$x_1 \oplus x_2$};
+
+	\node[input, above right = of operand-2] (operator-1-reporter) {$r_\oplus$};
+
+	\draw[->, ultra thick] (operand-1) -- (operator-1);
+	\draw[->, ultra thick] (operand-2) -- (operator-1);
+	\draw[->,ultra thick] (operator-1) -- (output-operator-1);
+
+	\draw[->] (operator-1) -- (operator-1-reporter);
+
+	\node[input, below = of operator-2] (output-operator-2) {$x_1 \ominus x_2$};
+
+	\node[input, below right = of operand-2] (operator-2-reporter) {$r_\ominus$};
+
+	\draw[->, ultra thick] (operand-1) -- (operator-2);
+	\draw[->, ultra thick] (operand-2) -- (operator-2);
+	\draw[->,ultra thick] (operator-2) -- (output-operator-2);
+
+	\draw[->] (operator-2) -- (operator-2-reporter);
+
+	\end{tikzpicture}
+	\caption{\textbf{Network that reports which of two operands are active}.\label{fig:self-aware}}
+\end{figure}
+
 		
 		\newpage
 		\begin{figure}
